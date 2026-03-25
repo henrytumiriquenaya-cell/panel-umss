@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infinity Code - Panel UMSS</title>
+    <!-- FontAwesome para iconos -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #05070a;
+            --sidebar-bg: rgba(13, 18, 29, 0.95);
+            --card-dark: rgba(22, 27, 34, 0.75);
+            --border: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+            --text-dim: #cbd5e1;
+            --accent-lila: #8b5cf6;
+            --accent-blue: #38bdf8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Pantalla de Inicio de Sesión (Login) */
+        #login-screen {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(rgba(5, 7, 10, 0.8), rgba(5, 7, 10, 0.95)), 
+                        url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=2072') center/cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: all 0.5s ease;
+        }
+
+        .login-card {
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid var(--border);
+            padding: 50px;
+            border-radius: 32px;
+            width: 520px;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(139, 92, 246, 0.2);
+            backdrop-filter: blur(20px);
+        }
+
+        .logo-umss-full {
+            width: 100%;
+            height: auto;
+            margin-bottom: 30px;
+        }
+
+        .login-card h1 {
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: 4px;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            color: white;
+        }
+
+        .login-input {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 18px;
+            width: 100%;
+            color: white;
+            font-size: 15px;
+            outline: none;
+            margin-bottom: 15px;
+        }
+
+        .login-btn {
+            background: var(--accent-lila);
+            color: white;
+            width: 100%;
+            padding: 18px;
+            border-radius: 14px;
+            border: none;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        /* Dashboard Principal */
+        #main-dashboard {
+            display: none;
+            width: 100%;
+            height: 100vh;
+            /* Fondo Nebulosa como el inicio */
+            background: linear-gradient(rgba(5, 7, 10, 0.75), rgba(5, 7, 10, 0.88)), 
+                        url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&q=80&w=2111') center/cover;
+            background-attachment: fixed;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 30px 0;
+            backdrop-filter: blur(20px);
+            z-index: 10;
+        }
+
+        .sidebar-header {
+            padding: 0 24px 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .sidebar-logo {
+            width: 70px;
+            height: auto;
+            filter: drop-shadow(0 0 10px rgba(237, 28, 36, 0.4));
+        }
+
+        .logo-text {
+            font-weight: 900;
+            font-size: 1.1rem;
+            color: white;
+            letter-spacing: 2.5px;
+            text-align: center;
+        }
+
+        .nav-menu {
+            flex: 1;
+        }
+
+        .nav-menu a {
+            padding: 14px 28px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: 0.3s;
+        }
+
+        .nav-menu a:hover, .nav-menu a.active {
+            color: white;
+            background: rgba(139, 92, 246, 0.15);
+        }
+
+        .nav-menu a.active {
+            border-left: 4px solid var(--accent-lila);
+            background: linear-gradient(90deg, rgba(139, 92, 246, 0.2), transparent);
+        }
+
+        /* Usuario en Sidebar */
+        .user-section {
+            padding: 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 2px solid var(--accent-blue);
+        }
+
+        .user-details .username {
+            display: block;
+            font-weight: 800;
+            font-size: 15px;
+            color: white;
+        }
+
+        .user-details .status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #4ade80;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #4ade80;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #4ade80;
+        }
+
+        .btn-logout {
+            width: 100%;
+            background: rgba(248, 113, 113, 0.1);
+            color: #f87171;
+            border: 1px solid rgba(248, 113, 113, 0.3);
+            padding: 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: #f87171;
+            color: white;
+        }
+
+        /* Contenido Principal */
+        .content {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .header-title h1 {
+            font-size: 32px;
+            font-weight: 900;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        .header-title p {
+            color: var(--text-dim);
+            font-size: 15px;
+            margin-top: 4px;
+        }
+
+        .btn-new-project {
+            background: linear-gradient(135deg, var(--accent-lila), #7c3aed);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);
+            transition: 0.3s;
+        }
+
+        /* Summary Cards */
+        .summary-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .summary-card {
+            padding: 30px;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .summary-card i {
+            font-size: 2.8rem;
+        }
+
+        .summary-card .stats .number {
+            font-size: 38px;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .summary-card .label {
+            font-size: 14px;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+
+        .summary-card.blue { background: linear-gradient(135deg, #2563eb, #0ea5e9); }
+        .summary-card.pink { background: linear-gradient(135deg, #db2777, #f472b6); }
+        .summary-card.orange { background: linear-gradient(135deg, #ea580c, #fbbf24); }
+
+        /* Grid de Portafolios: AJUSTE A 2 COLUMNAS */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            color: var(--accent-blue);
+            font-size: 18px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* Fuerza 2 columnas exactamente */
+            gap: 30px;
+            padding-bottom: 50px;
+            flex-grow: 1;
+        }
+
+        .portfolio-card {
+            background: var(--card-dark);
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            backdrop-filter: blur(25px);
+            display: flex;
+            flex-direction: column;
+            transition: 0.3s;
+        }
+
+        .portfolio-card:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-5px);
+            background: rgba(30, 41, 59, 0.85);
+        }
+
+        .card-banner {
+            padding: 28px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            color: white;
+        }
+
+        .card-banner i { font-size: 36px; }
+        .card-banner h3 { font-size: 22px; font-weight: 800; }
+        .card-banner p { font-size: 14px; opacity: 0.85; }
+
+        /* Colores de Banner */
+        .card-banner.blue { background: linear-gradient(90deg, #2563eb, transparent); }
+        .card-banner.purple { background: linear-gradient(90deg, #9333ea, transparent); }
+        .card-banner.gray { background: linear-gradient(90deg, #475569, transparent); }
+        .card-banner.orange { background: linear-gradient(90deg, #d97706, transparent); }
+
+        .card-info {
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-grow: 1;
+        }
+
+        .items-count .count {
+            font-size: 32px;
+            font-weight: 900;
+        }
+
+        .items-count .label {
+            font-size: 14px;
+            color: var(--text-dim);
+        }
+
+        .update-status {
+            font-size: 12px;
+            color: #4ade80;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .btn-view {
+            background: rgba(56, 189, 248, 0.1);
+            border: 2px solid var(--accent-blue);
+            color: var(--accent-blue);
+            padding: 12px 28px;
+            border-radius: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-view:hover {
+            background: var(--accent-blue);
+            color: #000;
+        }
+
+        /* Marca de agua */
+        .activate-windows {
+            position: fixed;
+            bottom: 25px;
+            right: 30px;
+            color: rgba(255,255,255,0.15);
+            text-align: right;
+            font-size: 13px;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="login-screen">
+        <div class="login-card">
+            <svg class="logo-umss-full" viewBox="0 0 520 160" xmlns="http://www.w3.org/2000/svg">
+                <g transform="translate(10, 5)">
+                    <path d="M0 0 L110 0 L55 150 Z" fill="white" stroke="white" stroke-width="1"/>
+                    <path d="M0 0 L55 0 L55 150 Z" fill="#ed1c24"/>
+                    <path d="M110 0 L55 0 L55 150 Z" fill="#ed1c24"/>
+                    <path d="M0 0 L110 0 L55 45 Z" fill="white"/>
+                    <text x="55" y="28" font-family="Arial Black" font-size="19" fill="#003366" text-anchor="middle">UMSS</text>
+                    <path d="M55 45 L85 95 L55 150 L25 95 Z" fill="white"/>
+                    <g stroke="#003366" stroke-width="1.2" fill="none">
+                        <circle cx="55" cy="85" r="12" stroke-dasharray="2,2"/>
+                        <path d="M55 75 L55 95 M50 85 L60 85" stroke-width="1"/>
+                    </g>
+                    <path d="M0 0 L110 0 L55 150 Z" fill="none" stroke="#003366" stroke-width="2.5"/>
+                </g>
+                <text x="145" y="60" font-family="Arial Black" font-size="52" fill="white">UNIVERSIDAD</text>
+                <text x="145" y="102" font-family="Arial Black" font-size="34" fill="#ed1c24">MAYOR DE SAN SIMÓN</text>
+            </svg>
+            <h1>INFINITY CODE</h1>
+            <form id="login-form">
+                <input type="email" class="login-input" placeholder="Correo Universitario" required>
+                <input type="password" class="login-input" placeholder="Contraseña" required>
+                <button type="submit" class="login-btn">Entrar al Sistema</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="main-dashboard">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <svg class="sidebar-logo" viewBox="0 0 110 150" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 0 L110 0 L55 150 Z" fill="white" stroke="white" stroke-width="1"/>
+                    <path d="M0 0 L55 0 L55 150 Z" fill="#ed1c24"/>
+                    <path d="M110 0 L55 0 L55 150 Z" fill="#ed1c24"/>
+                    <path d="M0 0 L110 0 L55 45 Z" fill="white"/>
+                    <text x="55" y="28" font-family="Arial Black" font-size="19" fill="#003366" text-anchor="middle">UMSS</text>
+                    <path d="M55 45 L85 95 L55 150 L25 95 Z" fill="white"/>
+                    <path d="M0 0 L110 0 L55 150 Z" fill="none" stroke="#003366" stroke-width="2.5"/>
+                </svg>
+                <div class="logo-text">INFINITY CODE</div>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="#" class="active"><i class="fas fa-folder-open"></i> Portafolios</a>
+                <a href="#"><i class="fas fa-graduation-cap"></i> Académico</a>
+                <a href="#"><i class="fas fa-chart-line"></i> Reportes</a>
+                <a href="#"><i class="fas fa-id-card"></i> Mi Perfil</a>
+            </nav>
+
+            <div class="user-section">
+                <div class="user-info">
+                    <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=100" alt="Perfil" class="user-avatar">
+                    <div class="user-details">
+                        <span class="username">201910012</span>
+                        <div class="status">
+                            <div class="status-dot"></div>
+                            Conectado
+                        </div>
+                    </div>
+                </div>
+                <button class="btn-logout" id="btnLogout">
+                    <i class="fas fa-power-off"></i> Cerrar Sesión
+                </button>
+            </div>
+        </aside>
+
+        <main class="content">
+            <header class="header-top">
+                <div class="header-title">
+                    <h1>Sistema de Portafolios</h1>
+                    <p>Gestión institucional de activos digitales - UMSS</p>
+                </div>
+                <button class="btn-new-project">
+                    <i class="fas fa-plus"></i> + Nuevo Proyecto
+                </button>
+            </header>
+
+            <div class="summary-row">
+                <div class="summary-card blue">
+                    <i class="fas fa-network-wired"></i>
+                    <div class="stats">
+                        <span class="number">12</span>
+                        <span class="label">Portafolios</span>
+                    </div>
+                </div>
+                <div class="summary-card pink">
+                    <i class="fas fa-file-invoice"></i>
+                    <div class="stats">
+                        <span class="number">156</span>
+                        <span class="label">Documentos</span>
+                    </div>
+                </div>
+                <div class="summary-card orange">
+                    <i class="fas fa-shield-check"></i>
+                    <div class="stats">
+                        <span class="number">28</span>
+                        <span class="label">Aprobados</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-header">
+                <i class="fas fa-layer-group"></i> Documentos Recientes
+            </div>
+
+            <!-- Grid de 2 columnas -->
+            <div class="portfolio-grid">
+                <!-- Fila 1 - Izquierda -->
+                <div class="portfolio-card">
+                    <div class="card-banner blue">
+                        <i class="fas fa-microchip"></i>
+                        <div>
+                            <h3>Proyecto TechWave</h3>
+                            <p>Facultad de Ciencia y Tecnología</p>
+                        </div>
+                    </div>
+                    <div class="card-info">
+                        <div class="items-count">
+                            <span class="count">24 <span class="label">ITEMS</span></span>
+                            <span class="update-status"><i class="fas fa-sync-alt fa-spin"></i> Actualizado hoy</span>
+                        </div>
+                        <button class="btn-view">Ver Panel</button>
+                    </div>
+                </div>
+
+                <!-- Fila 1 - Derecha -->
+                <div class="portfolio-card">
+                    <div class="card-banner purple">
+                        <i class="fas fa-chart-pie"></i>
+                        <div>
+                            <h3>Marketing Digital</h3>
+                            <p>Ciencias Económicas y Sociales</p>
+                        </div>
+                    </div>
+                    <div class="card-info">
+                        <div class="items-count">
+                            <span class="count">32 <span class="label">ITEMS</span></span>
+                            <span class="update-status"><i class="fas fa-check-circle"></i> Sincronizado</span>
+                        </div>
+                        <button class="btn-view">Ver Panel</button>
+                    </div>
+                </div>
+
+                <!-- Fila 2 - Izquierda (Debajo de TechWave) -->
+                <div class="portfolio-card">
+                    <div class="card-banner gray">
+                        <i class="fas fa-university"></i>
+                        <div>
+                            <h3>Plan Financiero 2024</h3>
+                            <p>Auditoría Corporativa</p>
+                        </div>
+                    </div>
+                    <div class="card-info">
+                        <div class="items-count">
+                            <span class="count">45 <span class="label">ITEMS</span></span>
+                            <span class="update-status" style="color: #94a3b8;"><i class="fas fa-history"></i> Hace 2 días</span>
+                        </div>
+                        <button class="btn-view">Ver Panel</button>
+                    </div>
+                </div>
+
+                <!-- Fila 2 - Derecha (Debajo de Marketing Digital) -->
+                <div class="portfolio-card">
+                    <div class="card-banner orange">
+                        <i class="fas fa-bezier-curve"></i>
+                        <div>
+                            <h3>Creative Portfolio</h3>
+                            <p>Artes y Humanidades</p>
+                        </div>
+                    </div>
+                    <div class="card-info">
+                        <div class="items-count">
+                            <span class="count">18 <span class="label">ITEMS</span></span>
+                            <span class="update-status" style="color: #94a3b8;"><i class="fas fa-clock"></i> Hace 1 semana</span>
+                        </div>
+                        <button class="btn-view">Ver Panel</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="activate-windows">
+                Activar Windows<br>
+                Ve a Configuración para activar Windows.
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const loginScreen = document.getElementById('login-screen');
+        const mainDashboard = document.getElementById('main-dashboard');
+        const loginForm = document.getElementById('login-form');
+        const btnLogout = document.getElementById('btnLogout');
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            loginScreen.style.opacity = '0';
+            setTimeout(() => {
+                loginScreen.style.display = 'none';
+                mainDashboard.style.display = 'flex';
+            }, 500);
+        });
+
+        btnLogout.addEventListener('click', () => {
+            mainDashboard.style.display = 'none';
+            loginScreen.style.display = 'flex';
+            setTimeout(() => { loginScreen.style.opacity = '1'; }, 50);
+        });
+    </script>
+</body>
+</html>
